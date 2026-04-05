@@ -65,3 +65,6 @@ archive/*/token_ledger.jsonl
 # Local ad-hoc project workspaces (never commit)
 /project*/
 /my_project_*/
+paper_workspace/*.aux
+paper_workspace/*.out
+paper_workspace/*.log

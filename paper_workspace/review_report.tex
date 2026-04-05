@@ -1,0 +1,186 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{array}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor={red!50!black},
+  citecolor={blue!80!black},
+  urlcolor={blue!80!black}
+}
+
+\title{\textbf{Referee Report}\\[0.3cm]
+\large On: ``Beyond Relevance: Dual-Salience Retrieval for Epistemically-Structured Knowledge Bases''\\
+\large Bottino, Ferrero, Futia, Beneventano}
+
+\author{PoggioAI/MSc Reviewer Agent}
+\date{April 2026}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+\section{Summary}
+% ============================================================
+
+This paper introduces \emph{dual-salience retrieval}, a framework that augments standard RAG systems with two independently computed salience dimensions---epistemic salience ($S_{\text{epi}}$, model-update pressure) and action salience ($S_{\text{act}}$, action-guidance pressure)---layered on top of a deterministic Knowledge Gravity Engine from prior work (OIDA). The framework includes a Surprise Engine with three surprise types, four Knowledge Regimes with differentiated retrieval behavior, context-dependent $\rho$-routing for salience mixing, and bounded modulation guarantees. The experimental design is pre-registered but not yet executed. The system is partially deployed.
+
+\textbf{Verdict:} The paper presents a rich and intellectually ambitious architecture with genuine conceptual novelty. However, it is fundamentally a \emph{position paper / architecture specification} rather than an empirical contribution, and several structural issues---including the absence of explicit research questions, excessive parameter counts without sensitivity analysis, and a Proposition stated without proof---limit the current contribution. The paper would benefit significantly from a tighter framing, reduced repetition, and at minimum a pilot empirical result.
+
+% ============================================================
+\section{Strengths}
+% ============================================================
+
+\begin{enumerate}[label=\textbf{S\arabic*.}, leftmargin=2cm]
+
+\item \textbf{Genuine conceptual contribution.} The decomposition of retrieval salience into epistemic and action components is well-motivated and, to our knowledge, novel. The observation that contradiction should be a \emph{positive} retrieval signal rather than noise inverts standard IR assumptions in a productive way.
+
+\item \textbf{Honest epistemological framing.} The paper is unusually transparent about what is established (formal design properties) and what is not (empirical validation). The ``Limitations'' section (Table~8) explicitly lists what the system guarantees vs.\ what it does not. The falsification commitment in \S11 is commendable.
+
+\item \textbf{Well-structured formal apparatus.} The modulator formulas (Eqs.~2--3), bounded modulation (Proposition~1), stability floors (Eq.~8), and decay rates (Table~6) form a coherent mathematical specification. The notation is consistent and well-documented (Appendix~C).
+
+\item \textbf{Productive cognitive science grounding.} The connections to ACT-R base-level activation, epistemic vigilance (Sperber et al.), action readiness (Frijda), and Global Workspace Theory are not decorative---they genuinely inform the architecture's design choices.
+
+\item \textbf{Comprehensive experimental pre-registration.} The baseline comparison (B1--B5), ablation studies (A1--A5), and falsification conditions (Table~9) demonstrate serious intent for empirical validation. The decisive test (A5: tag-and-boost vs.\ full system) is correctly identified as the make-or-break experiment.
+
+\item \textbf{Clear positioning table.} Table~1 effectively communicates the gap this work fills relative to existing systems.
+
+\end{enumerate}
+
+% ============================================================
+\section{Weaknesses}
+% ============================================================
+
+\begin{enumerate}[label=\textbf{W\arabic*.}, leftmargin=2cm]
+
+\item \textbf{No empirical results.} This is the most significant weakness. The paper presents zero experimental results. The entire experimental section (\S11) is future work. While the honest framing is appreciated, it means the paper's core claims---that dual salience outperforms gravity-only, that surprise improves retrieval, that $\rho$-routing outperforms fixed mixing---are \emph{entirely unvalidated}. The contribution reduces to architecture + formal properties, which alone may not meet the bar for a full research paper at a top venue.
+
+\item \textbf{No explicit research questions.} The introduction enumerates five ``contributions'' but does not state explicit research questions. Contributions describe \emph{what the paper offers}; research questions describe \emph{what the paper investigates}. Without research questions, the reader cannot assess whether the paper answers what it set out to answer. This is a structural gap.
+
+\item \textbf{Excessive free parameters without sensitivity analysis.} The system has 18 weight parameters, 8 decay rates, 11 $\rho$ routing values, regime multipliers, stability floor thresholds, surprise sub-weights, and consolidation score weights. All are ``design priors.'' The paper acknowledges this (\S13) but offers no sensitivity analysis, no ablation over parameter subsets, and no guidance on which parameters matter most. The risk of post-hoc overfitting on a small corpus ($\sim$500 KOs) is substantial.
+
+\item \textbf{Proposition~1 lacks proof.} The ``Bounded Modulation'' result is stated as a Proposition but not proved. It follows trivially from the clamp definition---which is precisely the problem: stating a trivial consequence of one's own design choice as a formal result overstates the contribution. Either prove a non-trivial property (e.g., convergence, optimality of bounds) or present it as a design constraint rather than a theorem.
+
+\item \textbf{Repetitive motivation.} The ``relevance vs.\ emergence'' argument is made in the abstract, \S1 para.~1, \S1 para.~2, \S1 para.~3, and \S15 (conclusion). Each repetition adds diminishing value. The sprint planning vignette (opening) is effective but the same conceptual point is then restated at least four more times. This inflates the paper by approximately 1--1.5 pages.
+
+\item \textbf{Single-system, single-organization evaluation.} All design validation comes from one venture studio. The $\rho$ routing table, regime distributions, decay rates, and weight vectors are all calibrated for this single context. Generalizability is acknowledged but unaddressed. The ``deployment observations'' (\S12) are design-level motivations, not evidence.
+
+\item \textbf{TACIT knowledge detection is unimplemented.} Surprise-by-deviation (\S5.2) depends on TACIT KOs, which require Knowledge Regimes Phase~5 (not yet implemented, per \S13). This means the second most important surprise type (weight $\sigma_2 = 0.30$) is not computable in the current system. The paper should be more explicit about which parts of the architecture are currently functional.
+
+\item \textbf{Missing baselines in related work comparison.} Table~1 compares against 7 systems but omits potentially relevant baselines: (a)~ColBERT/late-interaction retrieval, (b)~RAPTOR (tree-structured retrieval), (c)~HyDE (hypothetical document embeddings). The ``---'' entries for all baselines on all dimensions creates an impression that no prior system has any relevant capability, which may be overstated.
+
+\end{enumerate}
+
+% ============================================================
+\section{Detailed Comments}
+% ============================================================
+
+\subsection{Intro Compliance Audit}
+
+\begin{itemize}[nosep]
+\item \textbf{Research questions:} Not present. The intro lists contributions but not questions. Suggested fix: add 2--3 explicit RQs (e.g., ``RQ1: Does decomposing retrieval salience into epistemic and action components improve retrieval quality over unified salience?'').
+\item \textbf{Takeaways:} Partially present via contributions, but framed as feature descriptions rather than findings. Since no experiments exist, this is somewhat expected---but the paper should distinguish between \emph{design claims} (the architecture has property X) and \emph{empirical claims} (the architecture achieves outcome Y).
+\item \textbf{Spine sentence:} The sentence ``We propose that retrieval for epistemically structured knowledge bases requires a fundamentally different objective'' (\S1, para.~2) functions as a spine sentence. It appears in the third paragraph---acceptable but could be earlier.
+\item \textbf{Evidence pointers:} Contribution list points to sections (\S3--\S7) but not to specific figures, tables, or formal results. The pointers are structural, not evidential.
+\end{itemize}
+
+\subsection{Rigor Audit}
+
+\begin{itemize}[nosep]
+\item \textbf{Proposition~1 (Bounded Modulation):} As noted in W4, this is a direct consequence of the clamp operator and does not constitute a non-trivial formal result. Recommendation: either (a)~prove a property that does not follow trivially from the design (e.g., that the bounds are tight, or that they optimize some objective), or (b)~demote to a ``Design Property'' rather than a Proposition.
+\item \textbf{Surprise formulas (Eqs.~4--7):} Well-specified but contain implicit assumptions. For surprise-by-contradiction (Eq.~4), the use of $\max$ over contradiction neighbors assumes independence among contradictions. For surprise-by-deviation (Eq.~5), ``behavior($i$) contradicts pattern($j$)'' is undefined---how is behavioral contradiction detected?
+\item \textbf{Consolidation score (Appendix~B, Eq.~A.7):} The promotion threshold $C(\text{KO}) \geq 0.65$ is a free parameter. The four sub-components (cross-context use, survival ratio, relational centrality, dialectic stability) are not defined formally in the paper.
+\item \textbf{Final ranking (Eq.~9):} $R(q,i) = H(q,i) \cdot S_{\text{final}}(i)$ is a product of similarity and salience. This means a KO with very low semantic similarity but very high salience can still rank high. Is this intended? The paper does not discuss the interaction between similarity and salience or whether a minimum similarity threshold should apply.
+\end{itemize}
+
+\subsection{AI-Voice Audit}
+
+\begin{itemize}[nosep]
+\item \textbf{Risk level: Medium.} The paper does not read as AI-generated in the pejorative sense---it has genuine intellectual depth and coherent argumentation. However, several passages exhibit a rhetorical style that prioritizes framing over substance:
+  \begin{itemize}[nosep]
+  \item ``The field has spent five years improving how AI finds relevant content. It may be time to improve what `relevant' means---before the agent reads it.'' --- This closing sentence is a TED-talk flourish, not a research conclusion.
+  \item ``Gravity is the inertia of the knowledge system. Salience is its attention.'' --- Elegant but imprecise. Inertia resists change; gravity in this system does not resist change.
+  \item The repeated use of ``epistemically incoherent'' / ``epistemically flat'' as rhetorical anchors rather than technically defined terms.
+  \end{itemize}
+\item \textbf{Recommendation:} Replace rhetorical closings with precise technical summaries. Define ``epistemic incoherence'' formally if it is used as a technical concept.
+\end{itemize}
+
+% ============================================================
+\section{Questions for Authors}
+% ============================================================
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}, leftmargin=2cm]
+\item The final ranking score (Eq.~9) is multiplicative: $R = H \cdot S_{\text{final}}$. Have you considered that this allows high-salience, low-similarity KOs to outrank moderate-salience, high-similarity KOs? Is there a minimum similarity threshold below which salience should not apply?
+
+\item The $\rho$ routing table (Table~4) contains 11 fixed values. How were these values determined? Expert judgment? If so, by how many experts? Have you considered learning $\rho$ from user behavior logs?
+
+\item Surprise-by-deviation (Eq.~5) requires detecting that ``behavior($i$) contradicts pattern($j$).'' How is this operationalized? Is it a semantic similarity threshold? An LLM judgment? A rule-based check?
+
+\item The stability floor for CANONICAL KOs (Eq.~8) guarantees $\geq 60\%$ of gravity rank for high-confidence KOs. Has this value been stress-tested? What happens when 40\%+ of the corpus is CANONICAL?
+
+\item You state that WORKING KOs are ``excluded from global gravity computation.'' Does this mean a WORKING KO that contradicts a CANONICAL KO will not trigger surprise-by-contradiction? If so, this seems like a significant gap---many important contradictions emerge in working/draft knowledge.
+
+\item The paper mentions deployment in a venture studio with $\sim$500 KOs. At this scale, is the full salience machinery (18 weights, 8 decay rates, surprise engine, regime transitions) justified over a simpler heuristic? The decisive test A5 (tag-and-boost vs.\ full system) is correctly identified---but have you considered that A5 might show the simpler system is sufficient at this scale?
+
+\item What is the computational cost of the salience engine relative to gravity-only retrieval? The paper mentions batch computation every 2 hours and event-driven recalculation---what is the latency overhead for a single retrieval query?
+\end{enumerate}
+
+% ============================================================
+\section{Recommendation}
+% ============================================================
+
+\subsection{Overall Assessment}
+
+The paper presents a genuinely novel conceptual framework---dual-salience retrieval with surprise inversion---that addresses a real limitation of existing RAG systems. The formal specification is thorough, the related work coverage is comprehensive, and the intellectual ambition is evident. However, the paper is currently an \emph{architecture specification} with zero empirical validation, and several structural issues (missing research questions, trivial proposition, excessive repetition) limit its readiness.
+
+\subsection{Decision}
+
+\textbf{Score: 5/10 --- Borderline reject (revise and resubmit).}
+
+The paper falls between a strong position paper and an incomplete empirical paper. In its current form, it does not meet the bar for a venue that requires experimental validation, but it is too substantial to dismiss.
+
+\subsection{Ranked Revision Plan}
+
+\begin{enumerate}[label=\textbf{M\arabic*.}, leftmargin=2cm]
+
+\item \textbf{[Critical -- Experiment]} Run at minimum ablation A5 (tag-and-boost vs.\ full system) and report results. Even partial results on the decisive test would transform this from an architecture paper into an empirical contribution. If A5 shows the simpler system is sufficient, report that honestly---it is still a contribution.
+
+\item \textbf{[Critical -- Writeup]} Add explicit research questions to the introduction. Distinguish between design claims and empirical hypotheses. Frame the paper's contribution honestly given the current evidence level.
+
+\item \textbf{[Important -- Theory]} Either prove a non-trivial property in Proposition~1 (e.g., that the bounds are optimal under some criterion, or that the system converges) or demote it to a ``Design Property'' box. As stated, it is a tautology.
+
+\item \textbf{[Important -- Writeup]} Reduce repetition of the ``relevance vs.\ emergence'' argument. State it once clearly (abstract + \S1 para.~2) and thereafter reference rather than restate. This could save 1--1.5 pages for empirical content.
+
+\item \textbf{[Important -- Writeup]} Add a ``System Status'' table early in the paper that clearly delineates which components are implemented, which are specified but unimplemented, and which are planned. Currently this information is scattered across \S12, \S13, and \S14.
+
+\item \textbf{[Moderate -- Theory]} Formalize ``behavior($i$) contradicts pattern($j$)'' in surprise-by-deviation (Eq.~5). The current piecewise definition defers the hardest part.
+
+\item \textbf{[Moderate -- Writeup]} Discuss the interaction between similarity and salience in the final ranking (Eq.~9). Consider whether a minimum similarity threshold is needed to prevent pathological rankings.
+
+\item \textbf{[Minor -- Writeup]} Replace the closing rhetorical sentence with a precise technical summary of the paper's contributions and open questions.
+
+\end{enumerate}
+
+\subsection{Acceptance Test for Revision}
+
+A revised version should be accepted if:
+\begin{enumerate}[nosep]
+\item At least one empirical result (A5 or H1/H2) is reported with statistical significance.
+\item Explicit research questions are present and answered (even if some answers are ``not yet validated'').
+\item Proposition~1 is either upgraded with a non-trivial proof or correctly framed as a design constraint.
+\item Paper length does not increase despite adding empirical content (via reduced repetition).
+\end{enumerate}
+
+\end{document}

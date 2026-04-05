@@ -1,0 +1,79 @@
+{
+  "overall_score": 5,
+  "soundness": 2,
+  "presentation": 3,
+  "contribution": 3,
+  "clarity": 3,
+  "concision": 2,
+  "ai_voice_risk": "medium",
+  "hard_blockers": [
+    {
+      "id": "B1",
+      "evidence": "Introduction (§1) lists five 'Contributions' but contains no explicit research questions. Contributions describe what the paper offers; research questions describe what the paper investigates. The reader cannot assess whether the paper answers what it set out to answer."
+    }
+  ],
+  "must_fix_actions": [
+    {
+      "priority": 1,
+      "action": "Run at minimum ablation A5 (tag-and-boost vs. full dual-salience system at equal token budget) and report results. Even partial results on the decisive test would transform this from an architecture specification into an empirical contribution.",
+      "target_files": ["experiments/", "paper_workspace/final_paper.tex"],
+      "acceptance_test": "At least one empirical result (A5 or H1/H2) is reported with effect size and statistical significance test.",
+      "fix_type": "experiment"
+    },
+    {
+      "priority": 2,
+      "action": "Add 2-3 explicit research questions to the introduction. Distinguish between design claims (the architecture has property X) and empirical hypotheses (the architecture achieves outcome Y). Example: 'RQ1: Does decomposing retrieval salience into epistemic and action components improve retrieval quality over unified salience?'",
+      "target_files": ["paper_workspace/final_paper.tex"],
+      "acceptance_test": "Introduction contains at least 2 explicitly labeled research questions (RQ1, RQ2, ...) that are answered or explicitly marked as 'pending empirical validation' in the conclusion.",
+      "fix_type": "writeup"
+    },
+    {
+      "priority": 3,
+      "action": "Proposition 1 (Bounded Modulation) follows trivially from the clamp definition. Either prove a non-trivial property (e.g., that the bounds are tight, or optimal under some criterion, or that the system converges) or demote to a 'Design Property' box rather than a formal Proposition.",
+      "target_files": ["paper_workspace/final_paper.tex"],
+      "acceptance_test": "Proposition 1 either (a) has a proof establishing a non-trivial property, or (b) is reframed as a 'Design Constraint' without the Proposition environment.",
+      "fix_type": "theory"
+    },
+    {
+      "priority": 4,
+      "action": "Reduce repetition of the 'relevance vs. emergence' argument. The same conceptual point appears in abstract, §1 para 1, §1 para 2, §1 para 3, and §15 conclusion. State it once clearly (abstract + §1 para 2) and thereafter reference. This should save 1-1.5 pages for empirical content.",
+      "target_files": ["paper_workspace/final_paper.tex"],
+      "acceptance_test": "The core 'relevance vs. emergence' argument appears in at most 2 locations (abstract and one intro paragraph). Conclusion summarizes contributions without restating the full motivation.",
+      "fix_type": "writeup"
+    },
+    {
+      "priority": 5,
+      "action": "Add a 'System Status' table early in the paper (§3 or §1) clearly delineating which components are implemented, specified-but-unimplemented, and planned. Currently this critical information is scattered across §12, §13, and §14.",
+      "target_files": ["paper_workspace/final_paper.tex"],
+      "acceptance_test": "A table or structured list appears before §4 showing implementation status of each major component (KGE, Salience Engine phases 1-3, Surprise types, Regime transitions, ρ-routing).",
+      "fix_type": "writeup"
+    }
+  ],
+  "nice_to_fix_actions": [
+    {
+      "action": "Formalize 'behavior(i) contradicts pattern(j)' in surprise-by-deviation (Eq. 5). The current piecewise definition defers the hardest part of the computation."
+    },
+    {
+      "action": "Discuss interaction between similarity and salience in final ranking (Eq. 9). Consider whether a minimum similarity threshold should prevent high-salience, low-similarity KOs from dominating rankings."
+    },
+    {
+      "action": "Replace closing rhetorical sentence ('The field has spent five years...before the agent reads it') with a precise technical summary of open questions."
+    },
+    {
+      "action": "Add potentially relevant baselines to Table 1: ColBERT (late-interaction retrieval), RAPTOR (tree-structured), HyDE (hypothetical document embeddings)."
+    },
+    {
+      "action": "Clarify whether WORKING KOs can trigger surprise-by-contradiction against CANONICAL KOs, given that WORKING KOs are excluded from global gravity computation."
+    },
+    {
+      "action": "Report computational cost of salience engine relative to gravity-only retrieval (latency per query, batch computation overhead)."
+    }
+  ],
+  "intro_compliance": {
+    "has_questions": false,
+    "has_takeaways": false,
+    "has_spine_sentence_early": true,
+    "questions_answered": false,
+    "takeaways_supported": false
+  }
+}

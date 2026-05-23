@@ -1,0 +1,95 @@
+# =============================================================================
+# .llm_config.yaml Starter — PoggioAI/MSc
+# =============================================================================
+# Safe defaults: claude-sonnet-4-6 for cost/quality balance, $25 budget cap,
+# counsel disabled, persona council on.
+# Schema: ${CLAUDE_SKILL_DIR}/reference/llm-config-yaml.md
+#
+# Copy to <project_root>/.llm_config.yaml (gitignored).
+
+main_agents:
+  model: claude-sonnet-4-6                     # use claude-opus-4-6 for best quality
+  reasoning_effort: high
+  budget_tokens: 128000
+
+run_experiment_tool:
+  code_model: claude-sonnet-4-6
+  feedback_model: claude-sonnet-4-6
+  vlm_model: claude-sonnet-4-6
+  report_model: claude-sonnet-4-6
+
+budget:
+  usd_limit: 25                                # raise for production
+  hard_stop: true
+  fail_closed: true
+  pricing:
+    claude-opus-4-6:
+      input_per_1k: 0.005
+      output_per_1k: 0.025
+    claude-sonnet-4-6:
+      input_per_1k: 0.003
+      output_per_1k: 0.015
+    claude-sonnet-4-5:
+      input_per_1k: 0.003
+      output_per_1k: 0.015
+    gpt-5:
+      input_per_1k: 0.002
+      output_per_1k: 0.012
+    gpt-5.4:
+      input_per_1k: 0.0025
+      output_per_1k: 0.015
+    gemini-3-pro-preview:
+      input_per_1k: 0.00125
+      output_per_1k: 0.01
+
+# --- Multi-model counsel (debate) ---
+# Requires API keys for ALL listed providers. Disabled by default.
+counsel:
+  enabled: false                               # flip true ONLY after keys are confirmed
+  max_debate_rounds: 3
+  synthesis_model: claude-sonnet-4-6
+  models:
+    - model: claude-sonnet-4-6
+      reasoning_effort: high
+    - model: gpt-5.4
+      reasoning_effort: high
+      verbosity: high
+    - model: gemini-3-pro-preview
+      thinking_budget: 131072
+
+persona_council:
+  max_debate_rounds: 3
+  synthesis_model: claude-sonnet-4-6
+
+duality_check:
+  model: claude-sonnet-4-6
+
+# --- Per-agent model tiers (optional optimization) ---
+# When enabled, assigns cheaper models to simpler agents.
+per_agent_models:
+  enabled: false
+  tiers:
+    opus:
+      model: claude-opus-4-6
+      reasoning_effort: high
+      budget_tokens: 128000
+    sonnet:
+      model: claude-sonnet-4-6
+      reasoning_effort: high
+      budget_tokens: 128000
+    economy:
+      model: claude-sonnet-4-6
+      reasoning_effort: low
+  agent_tiers:
+    literature_review_agent: sonnet
+    math_literature_agent: sonnet
+    experiment_literature_agent: sonnet
+    formalize_results_agent: sonnet
+    writeup_agent: sonnet
+    reviewer_agent: sonnet
+    experimentation_agent: sonnet
+    followup_lit_review: sonnet
+    proofreading_agent: economy
+    proof_transcription_agent: economy
+    experiment_transcription_agent: economy
+    resource_preparation_agent: economy

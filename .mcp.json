@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "poggio-ai": {
+      "type": "stdio",
+      "command": "poggio-ai-mcp"
+    }
+  }
+}

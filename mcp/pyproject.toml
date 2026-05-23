@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "poggio-ai-mcp"
+version = "0.1.0"
+description = "MCP server for PoggioAI/MSc — expose the research-automation engine to MCP clients (Claude Code, Claude Desktop, Cursor, etc.)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Poggio Lab at MIT" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+]
+
+dependencies = [
+    "mcp>=1.2.0",
+    "pyyaml>=6.0,<7.0",
+    "poggio-ai>=1.0.0",
+]
+
+[project.scripts]
+poggio-ai-mcp = "poggio_ai_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/PoggioAI/PoggioAI_MSc"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["poggio_ai_mcp*"]

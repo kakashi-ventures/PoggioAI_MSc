@@ -1,0 +1,61 @@
+# =============================================================================
+# Campaign Starter — PoggioAI/MSc
+# =============================================================================
+# Minimal viable campaign with dynamic planning and autonomous repair.
+# Schema: ${CLAUDE_SKILL_DIR}/reference/campaign-yaml.md
+#
+# 1. Edit `name` and `workspace_root` (workspace_root must be unique per campaign).
+# 2. Write your research task to the file referenced by `planning.base_task_file`.
+# 3. Launch: `msc campaign start <this-file>.yaml`
+#    or via MCP: msc_campaign_start(campaign_file="<this-file>.yaml")
+
+name: "My Research Campaign"
+workspace_root: "results/my_campaign_v1"       # MUST be unique per campaign
+
+heartbeat_interval_minutes: 15
+max_idle_ticks: 6                              # auto-exit after 6 no-op ticks
+max_campaign_hours: 96                         # 4-day wall-clock cap
+counsel_model_timeout_seconds: 3600
+budget_usd: 50                                 # hard campaign-wide USD cap
+
+# --- Dynamic Planning ---
+# The planner generates a stage DAG from your task file via multi-model counsel.
+planning:
+  enabled: true
+  base_task_file: automation_tasks/my_task.txt # <-- create this file with your task
+  max_stages: 6                                # max non-paper stages
+  max_parallel: 2                              # max concurrent stages
+  human_review: true                           # pause for plan approval
+  planning_budget_usd: 5.0
+  planning_timeout_seconds: 600
+
+# Leave empty for dynamic planning (recommended):
+stages: []
+
+# --- Autonomous Repair ---
+# If a stage fails, the repair agent attempts to fix it automatically.
+repair:
+  enabled: true
+  max_attempts: 2
+  launcher: local                              # "local" or "slurm" for HPC
+  claude_binary: auto
+  model: claude-sonnet-4-6                     # opus is overkill for most repairs
+  effort: max
+  budget_usd: 10.0
+  timeout_seconds: 600
+  allowed_actions:
+    - edit_code
+    - fix_config
+    - generate_missing_artifacts
+    - install_dependencies
+  two_phase: true                              # plan -> review -> execute
+  plan_model: claude-sonnet-4-6
+  min_review_score: 7
+
+# --- Notifications (optional) ---
+notification:
+  telegram_bot_token: "${TELEGRAM_BOT_TOKEN}"
+  telegram_chat_id: "${TELEGRAM_CHAT_ID}"
+  on_stage_complete: true
+  on_failure: true
+  on_heartbeat: false

@@ -1,0 +1,20 @@
+{
+  "name": "kva",
+  "owner": {
+    "name": "Kakashi Ventures",
+    "email": "federico@kakashi.ventures"
+  },
+  "description": "Kakashi Ventures internal Claude Code marketplace. Hosts the PoggioAI toolkit and other KVA-wide plugins.",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "poggio-ai",
+      "source": "./poggio-ai",
+      "displayName": "PoggioAI Toolkit",
+      "description": "Drive the PoggioAI/MSc research engine + pre-submission final-review integrity audit (anti-hallucination) + agent-prompt tooling. Bundles the poggio-ai MCP server.",
+      "category": "research",
+      "keywords": ["research-automation", "paper-review", "citation-verification"],
+      "defaultEnabled": true
+    }
+  ]
+}

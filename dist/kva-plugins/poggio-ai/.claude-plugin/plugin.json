@@ -1,0 +1,22 @@
+{
+  "name": "poggio-ai",
+  "description": "The complete PoggioAI/MSc toolkit for Claude Code: drive the multi-agent research-automation engine (runs, campaigns, configs), run the pre-submission final-review integrity audit that catches GenAI-introduced defects (fabricated references, mismatched citations, captions for not-reported figures), and the agent-prompt analysis/refinement commands. Bundles the poggio-ai MCP server.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Kakashi Ventures",
+    "email": "federico@kakashi.ventures"
+  },
+  "homepage": "https://github.com/kakashi-ventures/poggioai_msc",
+  "repository": "https://github.com/kakashi-ventures/poggioai_msc",
+  "license": "MIT",
+  "keywords": [
+    "research-automation",
+    "multi-agent",
+    "scientific-writing",
+    "paper-review",
+    "citation-verification",
+    "ai-disclosure",
+    "msc",
+    "poggio-ai"
+  ]
+}
